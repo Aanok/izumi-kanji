@@ -12,9 +12,7 @@ struct Entry {
 }
 
 
-fn print_help() {
-    eprintln!("izumi-kanji [ all | latest | n ] <file>");
-}
+const HELP_TEXT : &'static str = "izumi-kanji [ all | latest | n ] <file>";
 
 
 fn parse_csv(what : &String, csv_path : &String)
@@ -58,11 +56,10 @@ fn parse_csv(what : &String, csv_path : &String)
 fn ask(entries : &mut Vec<Entry>) -> std::io::Result<()> {
     let mut input = String::new();
     entries.shuffle(&mut rand::thread_rng());
-    println!("==========");
     for entry in entries {
         println!("Query: {}", entry.latin);
         std::io::stdin().read_line(&mut input)?;
-        println!("Solution: {} ({})\n---", entry.kanji, entry.kana);
+        println!("Solution: {} ({})\n--------------------", entry.kanji, entry.kana);
     }
     Ok(())
 }
@@ -71,37 +68,37 @@ fn ask(entries : &mut Vec<Entry>) -> std::io::Result<()> {
 fn run(what : &String, csv_path : &String)
     -> Result<(), Box<dyn std::error::Error>> {
     let mut entries = parse_csv(what, csv_path)?;
-    loop { ask(&mut entries)?; }
+    loop {
+        ask(&mut entries)?;
+        println!("\x1b[F====================\n");
+    }
 }
 
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
-    match args.len() {
-        1 => {
-            print_help();
-            std::process::exit(1);
-        },
-        2 => {
-            let cmd = &"all".to_string();
-            let csv_path = &args[1];
-            if let Err(err) = run(cmd, csv_path) {
-                eprintln!("{}", err);
-                std::process::exit(1);
+    if let Err(err) =
+        match args.len() {
+            1 => {
+                Err(From::from(HELP_TEXT))
+            },
+            2 => {
+                let cmd = &"all".to_string();
+                let csv_path = &args[1];
+                run(cmd, csv_path)
+            },
+            3 => {
+                let cmd = &args[1];
+                let csv_path = &args[2];
+                run(cmd, csv_path)
+            },
+            _ => {
+                Err(From::from(HELP_TEXT))
             }
-        },
-        3 => {
-            let cmd = &args[1];
-            let csv_path = &args[2];
-            if let Err(err) = run(cmd, csv_path) {
-                eprintln!("{}", err);
-                std::process::exit(1);
-            }
-        },
-        _ => {
-            print_help();
+        } {
+            eprintln!("{}", err);
             std::process::exit(1);
         }
-    }
+
 }
