@@ -19,7 +19,7 @@ Where:
 - **latest** will loop randomized queries only on records sharing the same id with the first record.
 - **id** will loop randomized queries only on records with the provided id.
 
-If neither of these three arguments is passed, `all` is assumed.
+If neither of these three arguments is passed, `latest` is assumed.
 
 ### CSV file
 The program expects to be passed a CSV file where each record describes a kanji expression you're trying to learn, formatted as follows:
