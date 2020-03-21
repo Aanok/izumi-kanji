@@ -84,7 +84,7 @@ fn main() {
                 Err(From::from(HELP_TEXT))
             },
             2 => {
-                let cmd = &"all".to_string();
+                let cmd = &"latest".to_string();
                 let csv_path = &args[1];
                 run(cmd, csv_path)
             },
