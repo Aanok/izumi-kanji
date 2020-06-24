@@ -49,6 +49,9 @@ fn parse_csv(what : &String, csv_path : &String)
         }
     }
 
+    if entries.len() == 0 {
+        return Err(From::from("No entries found matching query."));
+    }
     Ok(entries)
 }
 
